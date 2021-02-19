@@ -4,6 +4,7 @@ board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 def start_game():
     board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     turn = 0
+    player = 1
 
 
 0, 1, 2
