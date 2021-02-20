@@ -5,8 +5,10 @@ import random
 def start_game() -> int:
     board = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0])
     player = -1
+    turn = 0
 
-    while not did_win(board, player):
+    while not did_win(board, player) and turn < 9:
+        turn += 1
         print_board(board)
         player *= -1
         next = play_turn(board * player, player)
