@@ -5,18 +5,23 @@ from os import path
 
 
 memoryPath = "asskicker7.json"
+import pandas as pd
+import csv
+import json 
 
+newRow = []
 
 def start_game() -> int:
     board = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0])
     player = -1
     turn = 0
+    newRow = []
 
     while not did_win(board, player) and turn < 9:
         turn += 1
         # print_board(board)
         player *= -1
-        next = play_turn(board * player, player)
+        next = play_turn(board * player, player, turn)
 
         # print('player {} picked {}'.format(board_fills[player], next))
         board[next] = player
@@ -33,11 +38,9 @@ def start_game() -> int:
         # print("Tie")
         return 0
 
-
 # 0, 1, 2
 # 3, 4, 5
 # 6, 7, 8
-
 
 def did_win(board, player_sign) -> bool:
     for i in range(3):
@@ -52,21 +55,19 @@ def did_win(board, player_sign) -> bool:
 
     if(board[2] == board[4] == board[6] == player_sign):
         return True
-
     return False
-
 
 board_fills = [' ', 'X', 'O']
 
-
 def print_board(board):
+    pass
     for i in range(9):
         print(board_fills[board[i]], end='|' if i % 3 != 2 else "\n")
     print("\n")
     print("-"*10)
 
 
-def play_turn(board, player) -> int:
+def play_turn(board, player, turn) -> int:
     # if player == 1:
     # i = random.randint(0, 8)
     # while board[i] != 0:
@@ -106,6 +107,7 @@ def play_turn(board, player) -> int:
             'choice': i
         })
 
+    newRow.append(i)
     return i
 
 
@@ -219,4 +221,66 @@ def flip_horizontal(p):
     return "".join([p[6], p[7], p[8], p[3], p[4], p[5], p[0], p[1], p[2]])
 
 
-simulate()
+
+def learn_game():
+    global newRow
+    
+    tree = {}
+    
+    for i in range(1000):
+        newRow= []
+        result = start_game()
+
+        print(newRow, result)
+        
+
+        build_tree(tree, 0, newRow, result)
+        with open('tictac.csv', 'a', newline='') as f:
+            thewriter = csv.writer(f)
+            thewriter.writerow(newRow)
+
+    with open('tree.json', 'w', newline='') as f:
+        f.write(json.dumps(tree, indent=4))
+
+
+def build_tree(tree, depth, row, result):
+    if(len(row)-1 == depth):
+        tree[row[depth]] = result
+        return
+    if not row[depth] in tree:
+        tree[row[depth]] = {}
+    build_tree(tree[row[depth]], depth+1, row, result)
+    return tree 
+
+learn_game()
+
+# newRow.append(player_sign)
+#             with open('tictac.csv', 'w', newline='') as f:
+#                 thewriter = csv.writer(f)
+#                 thewriter.writerow(newRow)
+                # thewriter.writerow(newRow)
+
+# import csv
+# newRow = ['']
+# with open('tictac.csv', 'w', newline='') as f:
+#     thewriter = csv.writer(f)
+#     thewriter.writerow(newRow)
+
+
+
+# tree = {}
+# tree[1] = {}
+# if 1 in tree[4] 
+# type(x) is int 
+
+
+
+
+# if (did_win) or:
+#     return result.append()
+# return 
+
+
+
+
+
